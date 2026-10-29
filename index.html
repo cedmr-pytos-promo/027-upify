@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UPIFY – Avances del proyecto</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#F2F5F9;--card:#FFFFFF;--ink:#10263B;--mute:#4A5D70;--line:#CBD5E1;
+  --done:#0F8B8D;--wip:#E8A800;--todo:#8696A8;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0E1A26;--card:#152434;--ink:#E6EEF6;--mute:#9FB2C4;--line:#2A3B4D;--done:#3CC6C8;--wip:#F4B400;--todo:#7F93A8;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#0E1A26;--card:#152434;--ink:#E6EEF6;--mute:#9FB2C4;--line:#2A3B4D;--done:#3CC6C8;--wip:#F4B400;--todo:#7F93A8;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;line-height:1.1;margin:0}
+a{color:var(--done)}
+a:focus-visible{outline:3px solid var(--wip);outline-offset:3px}
+.wrap{max-width:62rem;margin:0 auto;padding:0 1.25rem}
+header.top{padding:1.25rem 0;border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.brand{font:800 1.4rem "Bricolage Grotesque",sans-serif;letter-spacing:.02em}
+.top span{color:var(--mute);font-size:.95rem}
+.hero{padding:3.5rem 0 1rem}
+.hero h1{font-size:clamp(2.4rem,7vw,4.6rem);font-weight:800;max-width:14ch;letter-spacing:-.02em}
+.hero p{max-width:40rem;color:var(--mute);margin:1.25rem 0 0;font-size:1.15rem}
+section{padding:2.5rem 0}
+h2{font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:800;margin-bottom:.5rem}
+.sub{color:var(--mute);max-width:38rem;margin:0 0 1.75rem}
+/* escalera */
+.stairs{list-style:none;margin:0 0 2rem;padding:0;display:flex;align-items:flex-end;gap:.5rem;height:15rem}
+.stairs li{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.bar{height:var(--h);border-radius:.4rem .4rem 0 0;background:var(--done)}
+.s-wip .bar{background:repeating-linear-gradient(135deg,var(--wip) 0 .6rem,transparent .6rem 1.1rem);border:2px solid var(--wip);border-bottom:0}
+.s-todo .bar{background:transparent;border:2px dashed var(--todo);border-bottom:0}
+.stairs b{display:block;font-size:.85rem;line-height:1.25;margin-top:.5rem;font-weight:700;min-height:2.5rem}
+.ls{display:none}
+.legend{display:flex;gap:1.25rem;flex-wrap:wrap;color:var(--mute);font-size:.95rem;margin-bottom:2rem}
+.legend i{display:inline-block;width:.9rem;height:.9rem;border-radius:.2rem;vertical-align:-.1rem;margin-right:.4rem;background:var(--done)}
+.legend .w{background:repeating-linear-gradient(135deg,var(--wip) 0 .3rem,transparent .3rem .55rem);border:2px solid var(--wip)}
+.legend .t{background:transparent;border:2px dashed var(--todo)}
+.rows{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:12rem 1fr;gap:.5rem 1.5rem;padding:1rem 0;border-bottom:1px solid var(--line)}
+.row h3{font-size:1.15rem;font-weight:600}
+.row p{margin:0}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;margin-top:.35rem}
+.tag.ok{color:var(--done)}.tag.wip{color:var(--wip)}.tag.no{color:var(--mute)}
+.tag::before{content:"";display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:currentColor;margin-right:.4rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+ul.plain{margin:0;padding-left:1.2rem}
+ul.plain li{margin:.35rem 0}
+.chips{display:flex;flex-wrap:wrap;gap:.45rem;padding:0;margin:.75rem 0 0;list-style:none}
+.chips li{background:var(--card);border:1px solid var(--line);border-radius:2rem;padding:.2rem .8rem;font-size:.95rem}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:.75rem;padding:1.5rem}
+.panel h3{font-size:1.25rem;font-weight:600}
+.panel p.sm{margin:.25rem 0 0;color:var(--mute);font-size:.95rem}
+ol.time{list-style:none;margin:0;padding:0;border-left:3px solid var(--line)}
+ol.time li{position:relative;padding:0 0 1.4rem 1.5rem}
+ol.time li::before{content:"";position:absolute;left:-.62rem;top:.35rem;width:1rem;height:1rem;border-radius:50%;background:var(--bg);border:3px solid var(--todo)}
+ol.time b{font-family:"Bricolage Grotesque",sans-serif;font-size:1.15rem}
+ol.time span{display:block;color:var(--mute)}
+.next{border-left:4px solid var(--wip);padding:.25rem 0 .25rem 1rem;margin:0 0 2rem}
+footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--mute);font-size:.95rem}
+footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+@media (max-width:40rem){
+  .wrap{padding:0 1rem}
+  .lf{display:none}
+  .ls{display:inline}
+  .stairs{height:15rem;gap:.25rem}
+  .stairs li{min-width:0;flex-direction:column-reverse;justify-content:flex-start}
+  .bar{height:calc(var(--h) * .74)}
+  .stairs b{margin:0;padding-top:.45rem;min-height:2.6rem;font-size:.64rem;letter-spacing:-.02em;line-height:1.2;text-align:center;overflow-wrap:break-word}
+  .row{grid-template-columns:1fr}
+  .two{grid-template-columns:1fr}
+}
+@media (max-width:22rem){.stairs b{font-size:.58rem;letter-spacing:-.03em}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><div class="brand">UPIFY</div><span>Informe de avance, 2ª etapa del Proyecto de Promoción</span></div></header>
+
+<main>
+<div class="wrap">
+  <div class="hero">
+    <h1>Nadie sube solo: Upify te acompaña.</h1>
+    <p>Upify es una plataforma de aprendizaje colaborativo para que los estudiantes se hagan consultas, compartan recursos y se ayuden entre pares en cada materia. Esta página muestra hasta dónde llegamos.</p>
+  </div>
+
+  <section id="estado" aria-labelledby="t-estado">
+    <h2 id="t-estado">Cómo vamos</h2>
+    <p class="sub">Cinco funciones que priorizamos en el anteproyecto. Cada escalón es una de ellas.</p>
+    <ol class="stairs">
+      <li class="s-wip" style="--h:28%;--w:30%"><b><span class="lf">Registro de usuarios</span><span class="ls">Registro</span></b><div class="bar"></div></li>
+      <li class="s-ok" style="--h:46%;--w:45%"><b><span class="lf">Materias</span><span class="ls">Materias</span></b><div class="bar"></div></li>
+      <li class="s-ok" style="--h:64%;--w:60%"><b><span class="lf">Preguntas y respuestas</span><span class="ls">Preguntas</span></b><div class="bar"></div></li>
+      <li class="s-wip" style="--h:82%;--w:80%"><b><span class="lf">App móvil</span><span class="ls">App móvil</span></b><div class="bar"></div></li>
+      <li class="s-todo" style="--h:100%;--w:100%"><b><span class="lf">Asistente de IA</span><span class="ls">Asistente</span></b><div class="bar"></div></li>
+    </ol>
+    <div class="legend"><span><i></i>Listo</span><span><i class="w"></i>En desarrollo</span><span><i class="t"></i>Para más adelante</span></div>
+
+    <div class="rows">
+      <div class="row"><div><h3>Registro de usuarios</h3><span class="tag wip">En desarrollo</span></div><p>Ya están las pantallas de registro e inicio de sesión para estudiantes y docentes. Todavía falta que el inicio de sesión verifique las cuentas registradas y que las cuentas se guarden.</p></div>
+      <div class="row"><div><h3>Materias</h3><span class="tag ok">Listo</span></div><p>El contenido está dividido por materia, así cada estudiante encuentra rápido lo que busca.</p></div>
+      <div class="row"><div><h3>Preguntas y respuestas</h3><span class="tag ok">Listo</span></div><p>Es el corazón de Upify: resolver dudas entre compañeros. Abajo está todo lo que estamos probando.</p></div>
+      <div class="row"><div><h3>App móvil</h3><span class="tag wip">En desarrollo</span></div><p>Por ahora Upify es un sitio web. La app llegará después, para llegar a más dispositivos.</p></div>
+      <div class="row"><div><h3>Asistente de IA</h3><span class="tag no">Fuera de esta etapa</span></div><p>Es el cambio más grande respecto al anteproyecto: una guía personalizada que apoye el aprendizaje de cada estudiante.</p></div>
+    </div>
+  </section>
+
+  <section id="preguntas" aria-labelledby="t-preg">
+    <h2 id="t-preg">Lo que estamos armando en preguntas y respuestas</h2>
+    <p class="sub">El prototipo de la página de consultas ya incluye, o está sumando, estas herramientas.</p>
+    <div class="two">
+      <ul class="plain">
+        <li>Guardado de las preguntas en el propio navegador</li>
+        <li>Fecha en cada pregunta y respuesta</li>
+        <li>Buscador de preguntas</li>
+        <li>Editar y borrar las propias</li>
+        <li>Votos “me sirvió”</li>
+      </ul>
+      <ul class="plain">
+        <li>Reportar contenido que no corresponde</li>
+        <li>Imágenes en las consultas</li>
+        <li>Enlace al perfil de quien responde</li>
+        <li>Respuesta destacada (“mejor respuesta”)</li>
+        <li>Recursos organizados por materia</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="materias" aria-labelledby="t-mat">
+    <h2 id="t-mat">Las materias del sitio</h2>
+    <p class="sub">Copiamos las del colegio, según la orientación.</p>
+    <div class="two">
+      <div class="panel">
+        <h3>Informática (BATIN)</h3>
+        <ul class="chips"><li>Guaraní</li><li>Literatura Castellana</li><li>Matemática</li><li>Matemática Aplicada</li><li>Inglés</li><li>Informática</li><li>Administración</li><li>Algorítmica</li><li>Física</li><li>Química</li><li>Software</li><li>Hardware</li></ul>
+      </div>
+      <div class="panel">
+        <h3>CC (BTICC)</h3>
+        <p class="sm">Las materias básicas, más AutoCAD. Sin Algorítmica, Software, Hardware ni Informática.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="camino" aria-labelledby="t-cam">
+    <h2 id="t-cam">Lo que viene</h2>
+    <p class="next">Primero nos falta completar el registro y el inicio de sesión (estudiante y docente) para que guarden y verifiquen las cuentas, probarlos y anotar qué resultado da cada prueba.</p>
+    <p class="sub">Plan para 3º curso, hasta la defensa final.</p>
+    <ol class="time">
+      <li><b>Marzo</b><span>Pruebas piloto con usuarios y primer informe de pruebas.</span></li>
+      <li><b>Abril y mayo</b><span>Ajustes y mejoras. Sale la versión Beta.</span></li>
+      <li><b>Junio y julio</b><span>Pruebas funcionales con el equipo y con usuarios, y segundo informe de pruebas.</span></li>
+      <li><b>Agosto</b><span>Documentación final: manual y guía técnica.</span></li>
+      <li><b>Octubre</b><span>Defensa del proyecto con el sistema terminado.</span></li>
+    </ol>
+  </section>
+
+  <section id="equipo" aria-labelledby="t-eq">
+    <h2 id="t-eq">Quiénes hacemos Upify</h2>
+    <p class="sub">Curso 2º BATÍN, Jornada Extendida, CED Miguela Rodríguez. Docente tutora: R. Daniela Ferreira-Delgado.</p>
+    <div class="rows">
+      <div class="row"><div><h3>Lindsay Ortiz</h3></div><p>Coordina al equipo y sigue el cronograma.</p></div>
+      <div class="row"><div><h3>Ariel Gamarra</h3></div><p>Programa el sitio.</p></div>
+      <div class="row"><div><h3>Lucas Coronel</h3></div><p>Documenta el proyecto: informe y bitácora.</p></div>
+    </div>
+  </section>
+
+  <section id="ia" aria-labelledby="t-ia">
+    <h2 id="t-ia">Cómo usamos la IA</h2>
+    <p class="sub" style="margin:0">Nos ayudó sobre todo con el diseño del sitio: estructura visual, colores y distribución. En la programación la usamos poco, para resolver dudas puntuales y revisar HTML y CSS. La lógica del sistema y las decisiones del proyecto las tomamos nosotros.</p>
+  </section>
+</div>
+</main>
+
+<footer><div class="wrap">
+  <span>Actualizado en octubre de 2026</span>
+  <a href="https://lindsay09-cmd.github.io/UPIFY/">Ver el prototipo funcional</a>
+</div></footer>
+</body>
+</html>
